@@ -11,7 +11,7 @@ configs
 ## Separators
 ```m
 ||| <- Vertical separator
---- <- Horizontal separator
+--> <- Horizontal separator
 ```
 
 ## Layouts
