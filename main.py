@@ -1,42 +1,44 @@
-def clean_up(input : str) -> str:
-	import re
-	return re.sub(r'\n+', '\n', md)
+class slides:
 
-def read_md(filename : str) -> str:
-	md = ""
-	with open("test.md") as f:
-		md = f.read()
-	return md
+	def __init__(self, filename : str):
+		self.filename = filename
+		self.raw = self.__get_raw_md(self.filename)
+		self.configs = self.__get_configs(self.raw)
+		self.slides = self.__get_slides(self.raw)
 
-def get_configs(md : str):
-	# Skip first --- and empty char
-	return list(filter(None, md.split("---")[1].split("\n")))
+	def __get_raw_md(self, filename : str) -> str:
+		import re
+		md = ""
+		with open("test.md") as f:
+			md = f.read()
 
-def get_hslides(md : str):
-	# get rid of the config header
-	out = "".join(md.split("---")[2:])
-	return out.split("-->")
+		# Clean up a bit
+		return re.sub(r'\n+', '\n', md)
 
-def md_to_header(md_title : str):
-	c = md_title.count("#")
-	return f"<h{c}>{md_title[c+1:]}</h{c}>"
+	def __get_configs(self, md : str):
+		# Skip first --- and empty char
+		return list(filter(None, md.split("---")[1].split("\n")))
+
+	def __get_slides(self, md : str):
+		# get rid of the config header
+		out = "".join(md.split("---")[2:])
+		return out.split("-->")
+
+	def __md_to_header(self, md_title : str):
+		c = md_title.count("#")
+		return f"<h{c}>{md_title[c+1:]}</h{c}>"
+
+
+
+
+
 
 if __name__ == "__main__":
-	md = read_md("test.md")
-	md = clean_up(md)
-	#print(md)
 
-	# read configs between '&'
-	#configs = get_configs(md)
-	#print(f"{configs = }\n")
-
-	hslides = get_hslides(md)
-	#print(hslides[0])
-	print(*hslides, sep="/\n")
+	s = slides("test.md")
 
 	html = ""
-	vslides = []
-	for hslide in hslides:
+	for hslide in s.slides:
 		html += "<section>\n"
 		vslide = list(filter(None, hslide.split("|||")))
 		for item in vslide:
@@ -47,7 +49,3 @@ if __name__ == "__main__":
 		html += "</section>\n"
 
 	print(html)
-
-	#print(len(vslides))
-	#print(*vslides, sep="\n\n")
-
