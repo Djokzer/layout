@@ -31,8 +31,6 @@ class slides:
 
 
 
-
-
 if __name__ == "__main__":
 
 	s = slides("test.md")
@@ -40,12 +38,14 @@ if __name__ == "__main__":
 	html = ""
 	for hslide in s.slides:
 		html += "<section>\n"
+		
 		vslide = list(filter(None, hslide.split("|||")))
 		for item in vslide:
 			html += "\t<section>\n"
 			for elem in list(filter(None, item.split("\n"))):
 				html += f"\t\t{md_to_header(elem)}\n"
 			html += "\t</section>\n"
+		
 		html += "</section>\n"
 
 	print(html)
