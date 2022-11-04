@@ -7,8 +7,27 @@ def substr_between(text : str, l : str, r : str) -> str:
 class slide_parser:
 
 	def __init__(self, line : str):
-		
 		self.line = line
+		self.list_is_f = [ 
+			self.__is_list, 
+			self.__is_sublist, 
+			self.__is_image, 
+			self.__is_link, 
+			self.__is_code,
+			self.__is_title,
+			self.__to_paragraph,
+		]
+
+		self.list_to_f = [
+			self.__to_list, 
+			self.__to_sublist, 
+			self.__to_image, 
+			self.__to_link, 
+			self.__to_code,
+			self.__to_title,
+			self.__to_paragraph,
+		]
+
 		self.func = self.__detect(self.line)
 
 	def __detect(self, line):
@@ -18,21 +37,10 @@ class slide_parser:
 			Args:
 				line : str - The line to check
 		"""
-		if self.__is_list(self.line):
-			return self.__to_list
-		if self.__is_sublist(self.line):
-			return self.__to_sublist
-		elif self.__is_image(self.line):
-			return self.__to_image
-		elif self.__is_link(self.line):
-			return self.__to_link
-		elif self.__is_code(self.line):
-			return self.__to_code
-		elif self.__is_title(self.line):
-			return self.__to_title
-		else:
-			return self.__to_paragraph(self.line)
-
+		for i, func in enumerate(self.list_is_f):
+			if func(line):
+				return self.list_to_f[i] 
+		return self.__to_paragraph(self.line)
 
 	def __r(self, pattern, tested : str):
 		import re
@@ -60,6 +68,8 @@ class slide_parser:
 
 	def __is_title(self, line : str):
 		return self.__r("#+", line)
+
+
 
 	# INTO ENTITY
 	def __to_list(self, ):
