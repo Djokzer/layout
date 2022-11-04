@@ -69,8 +69,6 @@ class slide_parser:
 	def __is_title(self, line : str):
 		return self.__r("#+", line)
 
-
-
 	# INTO ENTITY
 	def __to_list(self, ):
 		print(f"To List")
