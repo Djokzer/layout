@@ -29,6 +29,8 @@ class slides:
 		return f"<h{c}>{md_title[c+1:]}</h{c}>"
 
 
+def substr_between(text : str, l : str, r : str) -> str:
+	return text[text.index(l)+len(l):text.index(r)]
 
 
 if __name__ == "__main__":
