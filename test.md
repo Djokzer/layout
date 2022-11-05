@@ -7,20 +7,40 @@ configs
 
 # Slide 1
 ## Sub title
+![test.png](test.png)
+[test.png](test.png)
+```c
+int main()
+{
+	printf("Graham\n");
+}
+```
+
+
 
 |||
 
 # Slide 2 Vertical
 ## Sub title
-![]()
-1. Paragraph
-- 
-- 
+
+-->
+# Slide 1
+## Sub title
+
+|||
+
+# Slide 2 Vertical
+## Sub title
+![image.png](image.png)
+1. Ordered List 
+2. Ordered List
+3. Ordered List
 
 |||
 
 # Slide 3 Vertical
 ## Sub title
+[Link.com](Link.com)
 
 -->
 
