@@ -11,7 +11,6 @@ class slide_parser:
 		self.f_ulist = False
 		self.f_olist = False
 
-
 		self.list_is_f = [ 
 			self.__is_sublist, 
 			self.__is_image, 
@@ -33,7 +32,6 @@ class slide_parser:
 			self.__to_list, 
 			self.__to_paragraph,
 		]
-
 
 		self.html = self.__parse_slide(self.slide)
 
@@ -128,8 +126,6 @@ class slide_parser:
 	
 	def __is_end_of_list(self, line : str):
 		return self.__regex(r'^\[END\]', line)
-
-
 
 	# INTO ENTITY
 

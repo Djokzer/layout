@@ -4,12 +4,15 @@ class slides:
 		self.raw = self.__get_raw_md(self.filename)
 		self.configs = self.__get_configs(self.raw)
 		self.slides = self.__get_slides(self.raw)
+		self.html = self.__parse_slides(self.slides)
 
+	def get_html(self, ):
+		return self.html
 
 	def __get_raw_md(self, filename : str) -> str:
 		import re
 		md = ""
-		with open("test.md") as f:
+		with open(self.filename) as f:
 			md = f.read()
 		# Clean up a bit
 		return re.sub(r'\n+', '\n', md)
@@ -18,31 +21,37 @@ class slides:
 		# Skip first --- and empty char
 		return list(filter(None, md.split("---")[1].split("\n")))
 
-	def __get_slides(self, md : str):
+	def __get_slides(self, md : str) -> list:
+		"""
+			This gives us a list of every horizontal slides
+			Each containing (If there is) sub slides that
+			are actually vertical slides
+		"""
 		# get rid of the config header
 		out = "".join(md.split("---")[2:])
 		return out.split("-->")
 
+	def __parse_slides(self, s : list) -> str:
+		import md_to_reveal as m
+
+		html = ""
+		# Col can be multiple vertical slides
+		for col in s:
+			#print(f"{col = }")
+			html += "<section>\n"
+
+			for vslide in col.split("|||"):
+				#print(f"{vslide = }")
+				html += "\t<section>\n"
+				html += m.slide_parser(list(filter(None, vslide.split("\n")))).html
+				html += "\t</section>\n"
+			html += "</section>\n"
+		return html
+
+
+
 if __name__ == "__main__":
-	import md_to_reveal as m
+
 	s = slides("test.md")
 
-	a = list(filter(None, s.slides[0].split("|||")[0].split("\n")))
-	buff = m.slide_parser(a).html
-
-	print(f"{buff}")
-
-	#html = ""
-	#for hslide in s.slides:
-	#	html += "<section>\n"
-		
-	#	vslide = list(filter(None, hslide.split("|||")))
-	#	for item in vslide:
-	#		html += "\t<section>\n"
-	#		for elem in list(filter(None, item.split("\n"))):
-	#			html += f"\t\t{md_to_header(elem)}\n"
-	#		html += "\t</section>\n"
-		
-	#	html += "</section>\n"
-
-	#print(html)
+	print(s.get_html())
