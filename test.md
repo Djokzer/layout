@@ -5,16 +5,16 @@ configs
 4 eme config
 ---
 
-# Slide 1
-## Sub title
-![test.png](test.png)
-[test.png](test.png)
+# Code slide
+## Some c code
+
 ```c
 int main()
 {
 	printf("Graham\n");
 }
 ```
+[link.com](Source of code)
 
 
 

@@ -40,12 +40,11 @@ class slide_parser:
 			#print(f"{line = }")
 			if not self.f_code and not self.f_list: # Only check if not already in block
 				for i, func_is in enumerate(self.list_is_f):
-					#print(f"{func_is(line) = }")
-					#print(f"{i = }")
+					#print(f"{i = } - {func_is(line) = }")
 					if func_is(line): # detected type
 						# Code are blocks
 						if func_is == self.__is_code:
-							buff += "<pre><code>\n"
+							buff += "<pre><code data-line-numbers data-trim data-noescape>\n"
 							self.f_code = not self.f_code
 
 						# Ordered Lists are blocks
@@ -66,11 +65,11 @@ class slide_parser:
 
 			else: # In block
 				if self.__is_code(line): # End of block
-					buff += "<\\code><\\pre>\n"
+					buff += "</code></pre>\n"
 					self.f_code = not self.f_code
 
 				elif self.__is_olist(line) or self.__is_ulist(line): # End of list
-					buff += "<\\ul>\n"
+					buff += "</ul>\n"
 					self.f_list = not self.f_list
 
 				elif self.f_code: # Code line
@@ -92,7 +91,7 @@ class slide_parser:
 		return self.__regex(r'^[0-9]\. ', line)
 	
 	def __is_ulist(self, line : str):
-		return self.__regex("^- ", line)
+		return self.__regex(r'^- ', line)
 
 	def __is_sublist(self, line : str):
 		return self.__regex(r'\t[0-9]\. ', line)
@@ -106,7 +105,7 @@ class slide_parser:
 		return self.__regex(r'\[.*\]\(.*\)', line)
 
 	def __is_code(self, line : str):
-		return self.__regex(r"^`{3}.+\n", line)
+		return self.__regex(r"^`{3}.{0,}", line)
 
 	def __is_title(self, line : str):
 		return self.__regex('^#+', line)
@@ -117,17 +116,17 @@ class slide_parser:
 
 	# INTO ENTITY
 	def __to_olist(self, line : str):
-		return f"\t\t<li>{line}<\\li>\n"
+		return f"\t\t<li>{line}</li>\n"
 
 	def __to_ulist(self, line : str):
-		return f"\t\t<li>{line}<\\li>\n"
+		return f"\t\t<li>{line}</li>\n"
 
 	def __to_title(self, line : str):
 		c = line.count("#")
 		return f"<h{c}>{line[c+1:]}</h{c}>\n"
 
 	def __to_sublist(self, line : str):
-		return f"\t\t<li>{line}<\\li>\n"
+		return f"\t\t<li>{line}</li>\n"
 
 	def __to_image(self, line : str):
 		link = substr_between(line, "[", "]")
@@ -142,4 +141,4 @@ class slide_parser:
 		return line
 	
 	def __to_code(self, line : str):
-		return line
+		return f"{line}\n"
