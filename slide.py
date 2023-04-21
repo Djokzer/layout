@@ -90,13 +90,7 @@ class Slide:
 		# regex pattern to match an ordered list element
 		pattern = re.compile(r'([0-9]+\. .*)')
 
-		finished = False
 		current_list = []
-		# Go through every lines, if it matches the pattern, add it to the current list
-		# and remove it from the slide
-		# When the line doesn't match the pattern, add the current list to the list of lists
-		# and reset the current list
-		# Look at the next line and restart the adding when it matches the pattern
 		for line in slide.split("\n"):
 			if pattern.match(line):
 				current_list.append(line)
@@ -108,27 +102,34 @@ class Slide:
 			olists.append(current_list)
 		out_slide = pattern.sub('', slide)
 		
-		#print(f"{olists = }")
 		return out_slide, olists
 
-		
-
-
-
-
-	def extract_ulists(self, slide : str) -> tuple:
+	def extract_ulists(self, slide: str) -> tuple:
 		"""
 		Extracts the unordered lists from a slide
 		args:
 			slide (str) : slide to parse
 		returns:
 			(str) : slide without unordered lists
-			(list[str]) : list of unordered lists
+			(list[list[str]]) : list of unordered lists
 		"""
-		
-		pattern = re.compile(r"(- .*)\n((\t- .*)*)")
-		ulists = pattern.findall(slide)
+		ulists = []
+
+		# regex pattern to match an unordered list element
+		pattern = re.compile(r'(- .*)')
+
+		current_list = []
+		for line in slide.split("\n"):
+			if pattern.match(line):
+				current_list.append(line)
+			else:
+				if current_list:
+					ulists.append(current_list)
+					current_list = []
+		if current_list:
+			ulists.append(current_list)
 		out_slide = pattern.sub('', slide)
+
 		return out_slide, ulists
 	
 
@@ -142,6 +143,6 @@ class Slide:
 
 	def __is_title(self, line : str):
 		return self.__regex_detect(r'^#+', line)
-
+	
 	def __is_paragraph(self, line : str):
-		return True
+		return self.__regex_detect(r'.*', line)
