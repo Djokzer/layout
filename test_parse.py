@@ -72,6 +72,16 @@ class Title(unittest.TestCase):
 					     						   "# Second Title", "## Second Subtitle", "### Second Subsubtitle", "#### Second Subsubsubtitle"])
 		
 
+class Image(unittest.TestCase):
+
+	def setUp(self):
+		self.s = Slides(f"{PATH_TESTS}/test_image.md")
+
+	def test_single_image(self):
+		self.assertEqual(self.s.slides[0].images, ["![Test image](https://picsum.photos/200/300)"])
+	
+	def test_multiple_images_with_mess(self):
+		self.assertEqual(self.s.slides[1].images, ["![Test image 1](https://picsum.photos/200/300)", "![Test image 2](https://picsum.photos/300/200)"])
 
 class Paragraphs(unittest.TestCase):
 
