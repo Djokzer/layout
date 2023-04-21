@@ -1,16 +1,18 @@
+import re
+
 class Slide:
     
 	def __init__(self, slide : str) -> None:
-		self.titles = []
-		self.paragraphs = []
-		self.olists = []
-		self.ulists = []
-		self.images = []
-		self.links = []
-		self.code = []
+		# ? PUT THAT INT DICT ?
+		self.slide 		= slide
+		self.titles 	= [] # str[]
+		self.paragraphs = [] # str[]
+		self.olists 	= [] # str[[str]]
+		self.ulists 	= [] # str[[str]]
+		self.images 	= [] # str[]
+		self.links 		= [] # str[]
+		self.codes 		= [] # str[]
 		self.parse(slide)
-		print("DEBUG : Slide parsed")
-		#print(f"{self.titles=}")
 
 	def parse(self, slide : str) -> None:
 		"""
@@ -20,6 +22,11 @@ class Slide:
 			returns:
 				None
 		"""
+		
+		slide, self.codes  = self.extract_code_blocks(slide)
+		slide, self.olists = self.extract_olists(slide)
+		slide, self.ulists = self.extract_ulists(slide)
+
 		# Split the slide into lines and remove empty lines
 		lines = list(filter(None, slide.split("\n")))
 
@@ -30,19 +37,10 @@ class Slide:
 				self.images.append(line)
 			elif self.__is_link(line):
 				self.links.append(line)
-			elif self.__is_code(line):
-				self.code.append(line)
-			elif self.__is_olist(line):
-				self.olists.append(line)
-			elif self.__is_ulist(line):
-				self.ulists.append(line)
-			elif self.__is_sublist(line):
-				self.ulists.append(line)
 			elif self.__is_paragraph(line):
 				self.paragraphs.append(line)
 			else:
 				raise Exception(f"Couldn't parse line: {line}")
-			
 
 	def __regex_detect(self, pattern, tested : str) -> bool:
 		"""
@@ -53,19 +51,86 @@ class Slide:
 			returns:
 				(bool) : True if the string matches the pattern
 		"""
-		import re
+		
 		if re.match(pattern, tested, flags=re.I | re.M):
 			return True
 		return False
 
-	def __is_olist(self, line : str):
-		return self.__regex_detect(r'^[0-9]\. ', line)
-	
-	def __is_ulist(self, line : str):
-		return self.__regex_detect(r'^- ', line)
+	# TODO : REFACTOR THESE 3 ONES INTO ONE
+	def extract_code_blocks(self, slide : str) -> tuple:
+		"""
+		Extracts the code blocks from a slide
+		args:
+			slide (str) : slide to parse
+		returns:
+			(str) : slide without code blocks, 
+			(list[str]) : list of code blocks
+		"""
+		
+		pattern = re.compile(r"(```[\w+]*)\n(.*?)\n(```)", re.DOTALL)
+		
+		# Find and extract the code blocks
+		code_blocks = pattern.findall(slide)
+		codes = [f"{block[0]}\n{block[1]}\n{block[2]}" for block in code_blocks]
+		out_slide = pattern.sub('', slide)
+		return out_slide, codes
 
-	def __is_sublist(self, line : str):
-		return self.__regex_detect(r'\t[0-9]\. ', line)
+
+	def extract_olists(self, slide: str) -> tuple:
+		"""
+		Extracts the ordered lists from a slide
+		args:
+			slide (str) : slide to parse
+		returns:
+			(str) : slide without ordered lists
+			(list[list[str]]) : list of ordered lists
+		"""
+		olists = []
+
+		# regex pattern to match an ordered list element
+		pattern = re.compile(r'([0-9]+\. .*)')
+
+		finished = False
+		current_list = []
+		# Go through every lines, if it matches the pattern, add it to the current list
+		# and remove it from the slide
+		# When the line doesn't match the pattern, add the current list to the list of lists
+		# and reset the current list
+		# Look at the next line and restart the adding when it matches the pattern
+		for line in slide.split("\n"):
+			if pattern.match(line):
+				current_list.append(line)
+			else:
+				if current_list:
+					olists.append(current_list)
+					current_list = []
+		if current_list:
+			olists.append(current_list)
+		out_slide = pattern.sub('', slide)
+		
+		#print(f"{olists = }")
+		return out_slide, olists
+
+		
+
+
+
+
+	def extract_ulists(self, slide : str) -> tuple:
+		"""
+		Extracts the unordered lists from a slide
+		args:
+			slide (str) : slide to parse
+		returns:
+			(str) : slide without unordered lists
+			(list[str]) : list of unordered lists
+		"""
+		
+		pattern = re.compile(r"(- .*)\n((\t- .*)*)")
+		ulists = pattern.findall(slide)
+		out_slide = pattern.sub('', slide)
+		return out_slide, ulists
+	
 
 	def __is_image(self, line : str):
 		# True if it matches the chars in join in order
@@ -75,14 +140,8 @@ class Slide:
 		# True if it matches the chars in join in order
 		return self.__regex_detect(r'\[.*\]\(.*\)', line)
 
-	def __is_code(self, line : str):
-		return self.__regex_detect(r"^`{3}.{0,}", line)
-
 	def __is_title(self, line : str):
 		return self.__regex_detect(r'^#+', line)
 
 	def __is_paragraph(self, line : str):
 		return True
-	
-	def __is_end_of_list(self, line : str):
-		return self.__regex_detect(r'^\[END\]', line)

@@ -48,5 +48,14 @@ def report():
 	# save the PDF document
 	pdf.save()
 
+
+def test1():
+	
+	s = slides("simple.md")
+	configs, ps = s.get()
+	a ,b = ps[1].extract_code_blocks()
+	print(f"{a  =}")
+	print(*b, sep = "\n")
+
 if __name__ == "__main__":
-	report()
+	test1()

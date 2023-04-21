@@ -1,7 +1,7 @@
 from slide import Slide
 from config import Config
 
-class slides:
+class Slides:
 
 	def __init__(self, filename : str):
 		"""
@@ -15,8 +15,7 @@ class slides:
 		self.slides_str = self.__get_slides_str(self.raw)
 		self.slides = self.__parse_slides(self.slides_str)
 		self.configs = Config(self.configs)
-		
-		
+
 	def get(self) -> tuple:
 		"""
 			Returns the slides and the configs

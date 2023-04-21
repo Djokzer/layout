@@ -13,16 +13,24 @@ This is a simple text.
 # Code block
 ```python
 def foo():
-	print("Hello world!")
+	print("Hello Graham!")
+```
+
+```c
+int main()
+{
+	print("Hello Graham!");
+}
+```
+
+```rust
+fn main()
+{
+	println!("Hello Graham!");
+}
 ```
 
 ---
-
-# Table
-| A | B | C |
-|---|---|---|
-| 1 | 2 | 3 |
-| 4 | 5 | 6 |
 
 ---
 
