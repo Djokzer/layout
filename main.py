@@ -1,9 +1,9 @@
-from slides import slides
+from slides import Slides
 from config import Config
-from slides import slides
+from renderer import Renderer
 
 def main():
-	s = slides("simple.md")
+	s = Slides("simple.md")
 	configs, ps = s.get()
 	print(f"PARAGRAPHS :  {ps[1].paragraphs}")
 	print(f"TITLES  : {ps[1].titles}")
@@ -51,11 +51,9 @@ def report():
 
 def test1():
 	
-	s = slides("simple.md")
-	configs, ps = s.get()
-	a ,b = ps[1].extract_code_blocks()
-	print(f"{a  =}")
-	print(*b, sep = "\n")
+	s = Slides("simple.md")
+	r = Renderer(s, (800, 450))
+
 
 if __name__ == "__main__":
 	test1()

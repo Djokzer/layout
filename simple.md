@@ -2,6 +2,7 @@
 title: Simple
 author: John Doe
 date: 2018-01-01
+font: fonts/Economica-Regular.ttf
 ---
 
 # Simple title
@@ -10,7 +11,7 @@ This is a simple text.
 
 ---
 
-# Code block
+# Code block # with hashes
 ```python
 def foo():
 	print("Hello Graham!")

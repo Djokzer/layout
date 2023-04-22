@@ -79,5 +79,5 @@ class Slides:
 		"""
 		# get rid of the config header
 		out = md.split('---', 2)[-1]
-		print(f"{out.split('---')=}")
+		#print(f"{out.split('---')=}")
 		return out.split("---")

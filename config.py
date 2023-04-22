@@ -6,6 +6,7 @@ class Config:
 			"title": "",
 			"date": "",
 			"theme": "",
+			"font" : "",
 		}
 		self.__parse(configs)
 
@@ -18,7 +19,7 @@ class Config:
 			None
 		"""
 		for config in configs:
-			config = config.replace(" ", "")
+			config = config.replace(" ", "") # remove spaces
 			key, value = config.split(":")
 			if key in self.settings:
 				self.settings[key] = value
