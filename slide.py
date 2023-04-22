@@ -5,13 +5,15 @@ class Slide:
 	def __init__(self, slide : str) -> None:
 		# ? PUT THAT INT DICT ?
 		self.slide 		= slide
-		self.titles 	= [] # str[]
-		self.paragraphs = [] # str[]
-		self.olists 	= [] # str[[str]]
-		self.ulists 	= [] # str[[str]]
-		self.images 	= [] # str[]
-		self.links 		= [] # str[]
-		self.codes 		= [] # str[]
+		self.items 		= {
+			"titles" 	: [],	# str[]
+			"paragraphs": [],	# str[]
+			"olists" 	: [],	# str[[str]]
+			"ulists" 	: [],	# str[[str]]
+			"images" 	: [],	# str[]
+			"links" 	: [],	# str[]
+			"codes" 	: []	# str[]
+		}
 		self.parse(slide)
 
 	def parse(self, slide : str) -> None:
@@ -23,22 +25,22 @@ class Slide:
 				None
 		"""
 		
-		slide, self.codes  = self.extract_code_blocks(slide)
-		slide, self.olists = self.extract_olists(slide)
-		slide, self.ulists = self.extract_ulists(slide)
+		slide, self.items["codes"]  = self.extract_code_blocks(slide)
+		slide, self.items["olists"] = self.extract_olists(slide)
+		slide, self.items["ulists"] = self.extract_ulists(slide)
 
 		# Split the slide into lines and remove empty lines
 		lines = list(filter(None, slide.split("\n")))
 
 		for line in lines:
 			if self.__is_title(line):
-				self.titles.append(line)
+				self.items["titles"].append(line)
 			elif self.__is_image(line):
-				self.images.append(line)
+				self.items["images"].append(line)
 			elif self.__is_link(line):
-				self.links.append(line)
+				self.items["links"].append(line)
 			elif self.__is_paragraph(line):
-				self.paragraphs.append(line)
+				self.items["paragraphs"].append(line)
 			else:
 				raise Exception(f"Couldn't parse line: {line}")
 

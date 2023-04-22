@@ -84,4 +84,9 @@ pdfmetrics.registerFont(TTFont("MyFont", "path/to/my/font.ttf"))
 pdf.setFont("MyFont", 14)
 ```
 
+# Sources
+Carbon API : https://github.com/cyberboysumanjay/Carbon-API
+
+
+
 
