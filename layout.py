@@ -18,6 +18,7 @@ class SlideLayout(Enum):
 	# Triple contents (3 main items)
 	# NOT IMPLEMENTED FOR NOW 
 	# ? Idea : Titled content (sub titles are for the main items)
+	# ? Idea : Parse the content differently to pick a layout in markdown
 	NOMAIN = 0
 	SINGLE = 1
 	DOUBLE = 2
@@ -25,7 +26,7 @@ class SlideLayout(Enum):
 	NOT_IMPLEMENTED = 4
     
 class Layout:
-    
+
 	def __init__(self, slide : Slide, size : tuple):
 		"""
 			This class is used to select the layout for each slide
@@ -126,7 +127,7 @@ class Layout:
 	def __single_layout(self, slide : Slide, size : tuple, coords : dict, types : list) -> dict:
 		"""
 			This will return the coordinates of every items
-			for a single layout
+			for a slide with a single main content
 
 			args:
 				slide (Slide) : slide to process
@@ -134,19 +135,23 @@ class Layout:
 				coords (dict) : coordinates of each item in the slide
 				types (list[str]) : list of the types of main items 
 			returns:
-				coords (dict) : coordinates of each item in the slide
+				coords (dict) : centered coordinates x, y + max width, max height
 		"""
 		max_titles = 5 # ? HARD CODED : Max number of titles
 		top_margin = 50 # ? HARD CODED : Margin at the top of the page
+		side_margin = 400 # ? HARD CODED : Margin Sides
+
 		font_size_title = int(slide.configs.settings["font-title"])
 		nb_titles = len(slide.items["titles"][:max_titles])
 
 		# Place taken by the titles in pixels
 		# ? Need interline ?
 		place_titles = top_margin + font_size_title * nb_titles
+		print(f"{place_titles = }")
 
 		# Compute the rest to be 100% - place_titles
 		max_main_size = (self.size[1] - place_titles) 
+		print(f"{max_main_size = }")
 
 		if len(slide.items["titles"]) > max_titles:
 			print("WARNING : Too many titles, will only render the first 5")
@@ -155,8 +160,6 @@ class Layout:
 
 		# ---------- Titles ----------
 		chunk_y_titles = place_titles / nb_titles # space between each title
-		print(f"{nb_titles = }")
-		print(f"{chunk_y_titles = }")
 		list_coords_titles = [] # [(x, y), (x, y)]
 		for i, title in enumerate(slide.items["titles"][:max_titles]):
 			y = top_margin + chunk_y_titles * i + chunk_y_titles / 2
@@ -167,9 +170,9 @@ class Layout:
 
 		# ---------- Main item ----------
 		# Giving centered x and y
-		list_coords_items = [] # [(x, y), (x, y)]
-		cy = self.size[1] / 2 + max_main_size / 2 # center y
-		list_coords_items.append((cx, cy))
+		list_coords_items = [] # [(x, y, mw), (x, y, mw)]
+		cy = place_titles + max_main_size / 2 # center y
+		list_coords_items.append((cx, cy, self.size[0] - side_margin, max_main_size))
 
 		coords[types[0]] = list_coords_items
 

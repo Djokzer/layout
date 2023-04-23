@@ -13,6 +13,12 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import mm
+
+
 
 
 class Renderer:
@@ -30,15 +36,15 @@ class Renderer:
 		self.size = size
 
 		# FONT
-		self.default_fontsize = 30
+		self.default_fontsize = int(slides.configs.settings["font-size"])
 		self.title_fontsize = int(slides.configs.settings["font-title"])
-		self.font_name = ""
+		self.font_name = slides.configs.settings["font"]
 		
 		# PDF
+		# bottomup = False : 0,0 at top left because wtf is wrong with people
 		self.pdf = canvas.Canvas("output.pdf", pagesize=self.size, bottomup=False)
 		self.__pdf_setup(self.pdf, self.configs)
 		self.current_page = 0
-
 
 		# Dict of drawers, for each type of item
 		self.drawers = {	"titles" : self.__draw_title,
@@ -61,7 +67,7 @@ class Renderer:
 			drawer = self.drawers[key] 		# Get the drawer
 			# For each item of that type
 			for i, c in enumerate(coord):
-				drawer(self.pdf, slide.items[key][i], (c[0], c[1]))
+				drawer(self.pdf, slide.items[key][i], c)
 
 			#		drawer(self.pdf, item, coord[0], coord[1]) 
 
@@ -71,11 +77,29 @@ class Renderer:
 			args:
 				pdf (canvas.Canvas) : pdf to add the paragraph to
 				paragraph (str) : paragraph to draw
-				coord (tuple) : coordinates of the paragraph
+				coord (tuple) : centered coordinates of the paragraph + max width, max height
 			returns:
 				None
 		"""
-		pdf.drawCentredString(coord[0], coord[1], paragraph)
+		cx, cy, mw, mh = coord
+		print(len(coord))
+		#pdf.line(0, cy, self.size[0], cy)
+		# ? This is the style of the paragraph
+		styles = getSampleStyleSheet()
+		styleN = styles['Normal']
+		styleN.fontName = self.font_name
+		styleN.fontSize = self.default_fontsize
+		styleN.leading = self.default_fontsize * 1.5
+		styleN.alignment = 4 # HARD CODED JUSTIFIED BECAUSE ITS DA BEST 
+
+		p = Paragraph(paragraph, styleN)
+		w, h = p.wrapOn(pdf, coord[2], coord[3])
+
+		# Need some tricks to center because of their shitty bottomup system
+		x = cx - w / 2
+		y = cy - h + self.default_fontsize * 2 - h / 2
+		p.drawOn(self.pdf, x, y)
+
 
 	def __draw_title(self, pdf : canvas.Canvas, title : str, coord : tuple):
 		"""
@@ -88,7 +112,6 @@ class Renderer:
 			returns:
 				None
 		"""
-		default = pdf._fontsize
 		title, title_size = self.configs.get_font_size(title)
 
 		# ? This chooses the font size according to the depth of the title

@@ -7,6 +7,7 @@ class Config:
 			"date": "01/01/2020",
 			"theme": "",
 			"font" : "Arial",
+			"font-size" : 50, 	# default
 			"font-title" : 120, # default
 		}
 		self.__parse(configs)
@@ -23,7 +24,7 @@ class Config:
 			config = config.replace(" ", "") # remove spaces
 			key, value = config.split(":")
 			if key in self.settings:
-				if key == "font-title":
+				if key == "font-title" or key == "font-size":
 					value = int(value)
 				self.settings[key] = value
 
