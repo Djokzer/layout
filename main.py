@@ -51,7 +51,7 @@ def report():
 
 def test1():
 	
-	s = Slides("simple.md")
+	s = Slides("single_slide.md")
 	r = Renderer(s, (1920, 1080))
 
 

@@ -1,10 +1,12 @@
 import re
+from config import Config
 
 class Slide:
     
-	def __init__(self, slide : str) -> None:
+	def __init__(self, slide : str, configs : Config) -> None:
 		# ? PUT THAT INT DICT ?
 		self.slide 		= slide
+		self.configs 	= configs
 		self.items 		= {
 			"titles" 	: [],	# str[]
 			"paragraphs": [],	# str[]

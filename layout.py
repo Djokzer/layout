@@ -137,33 +137,38 @@ class Layout:
 				coords (dict) : coordinates of each item in the slide
 		"""
 		max_titles = 5 # ? HARD CODED : Max number of titles
-		max_title_size = 1 / 3 # 30% of the slide
+		top_margin = 50 # ? HARD CODED : Margin at the top of the page
+		font_size_title = int(slide.configs.settings["font-title"])
+		nb_titles = len(slide.items["titles"][:max_titles])
 
-		# Compute the rest to be 100% - max_title_size
-		max_main_size = 1 - max_title_size
+		# Place taken by the titles in pixels
+		# ? Need interline ?
+		place_titles = top_margin + font_size_title * nb_titles
+
+		# Compute the rest to be 100% - place_titles
+		max_main_size = (self.size[1] - place_titles) 
 
 		if len(slide.items["titles"]) > max_titles:
 			print("WARNING : Too many titles, will only render the first 5")
 
-		cx = self.size[0] / 2
+		cx = self.size[0] / 2 # Centered x
 
 		# ---------- Titles ----------
-		# TODO : Chose these values according to the font size
-		# For now its just the 30% / number of titles
-		chunk_y_titles = int(self.size[1] * max_title_size) / len(slide.items["titles"][:max_titles])
-
+		chunk_y_titles = place_titles / nb_titles # space between each title
+		print(f"{nb_titles = }")
+		print(f"{chunk_y_titles = }")
 		list_coords_titles = [] # [(x, y), (x, y)]
 		for i, title in enumerate(slide.items["titles"][:max_titles]):
-			y = chunk_y_titles * i + chunk_y_titles / 2
+			y = top_margin + chunk_y_titles * i + chunk_y_titles / 2
 			list_coords_titles.append((cx, y))
 
 		coords["titles"] = list_coords_titles
+		print(coords)
 
 		# ---------- Main item ----------
 		# Giving centered x and y
 		list_coords_items = [] # [(x, y), (x, y)]
-		size_y_main = int(self.size[1] * max_main_size) # remaining space for the main item
-		cy = self.size[1] / 2 + size_y_main / 2 # center y
+		cy = self.size[1] / 2 + max_main_size / 2 # center y
 		list_coords_items.append((cx, cy))
 
 		coords[types[0]] = list_coords_items

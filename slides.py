@@ -13,8 +13,8 @@ class Slides:
 		self.raw = self.__get_raw_md(self.filename)
 		self.configs = self.__get_configs(self.raw)
 		self.slides_str = self.__get_slides_str(self.raw)
-		self.slides = self.__parse_slides(self.slides_str)
 		self.configs = Config(self.configs)
+		self.slides = self.__parse_slides(self.slides_str)
 
 	def get(self) -> tuple:
 		"""
@@ -47,7 +47,7 @@ class Slides:
 		"""
 		slides = []
 		for slide in slides_str:
-			slides.append(Slide(slide))
+			slides.append(Slide(slide, self.configs))
 		return slides
 
 	def __get_raw_md(self, filename : str) -> str:

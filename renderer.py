@@ -28,11 +28,11 @@ class Renderer:
 		self.slides = slides
 		self.configs, self.slides = self.slides.get()
 		self.size = size
-		self.title_fontsize = 120
 
 		# FONT
-		self.font_name = ""
 		self.default_fontsize = 30
+		self.title_fontsize = int(slides.configs.settings["font-title"])
+		self.font_name = ""
 		
 		# PDF
 		self.pdf = canvas.Canvas("output.pdf", pagesize=self.size, bottomup=False)
@@ -40,13 +40,6 @@ class Renderer:
 		self.current_page = 0
 
 
-		# Adding titles
-		#self.__draw_title(self.pdf, self.slides[0].titles[0], self.size[0] // 2, 50)
-		#self.__draw_title(self.pdf, self.slides[0].titles[1], self.size[0] // 2, 100)
-		#self.__draw_title(self.pdf, self.slides[0].titles[1], self.size[0] // 2, 150)
-		#self.__draw_title(self.pdf, self.slides[0].titles[1], self.size[0] // 2, 200)
-		#self.__draw_title(self.pdf, self.slides[0].titles[1], self.size[0] // 2, 250)
-		#self.__draw_title(self.pdf, self.slides[0].titles[1], self.size[0] // 2, 300)
 		# Dict of drawers, for each type of item
 		self.drawers = {	"titles" : self.__draw_title,
 							"paragraphs" : self.__draw_paragraph,}
@@ -68,9 +61,6 @@ class Renderer:
 			drawer = self.drawers[key] 		# Get the drawer
 			# For each item of that type
 			for i, c in enumerate(coord):
-				#print(f"{c = }")
-				#print(f"{(c[0], c[1]) = }")
-				#print(f"{slide.items[key][i] = }")
 				drawer(self.pdf, slide.items[key][i], (c[0], c[1]))
 
 			#		drawer(self.pdf, item, coord[0], coord[1]) 
@@ -99,13 +89,10 @@ class Renderer:
 				None
 		"""
 		default = pdf._fontsize
-		# One '#' is the biggest title '#####' is the smallest
-		parts = title.split(' ', 1)
-		hashes = parts[0]
-		title = parts[1]
+		title, title_size = self.configs.get_font_size(title)
 
 		# ? This chooses the font size according to the depth of the title
-		pdf.setFont(self.font_name, self.title_fontsize - (len(hashes) * 20)) 
+		pdf.setFont(self.font_name, title_size) 
 		pdf.drawCentredString(coord[0], coord[1], title)
 		pdf.setFont(self.font_name, self.default_fontsize)
 
@@ -117,7 +104,7 @@ class Renderer:
 		self.font_name = self.configs.settings["font"].split("/")[-1].split(".")[0]
 		print(self.font_name)
 		pdfmetrics.registerFont(TTFont(self.font_name, configs.settings["font"]))
-		self.pdf.setFont(self.font_name, 20)
+		self.pdf.setFont(self.font_name, self.default_fontsize)
 
 	def __pdf_finish_page(self, pdf : canvas.Canvas):
 		self.pdf.showPage()
