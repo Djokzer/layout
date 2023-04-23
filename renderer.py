@@ -28,10 +28,11 @@ class Renderer:
 		self.slides = slides
 		self.configs, self.slides = self.slides.get()
 		self.size = size
+		self.title_fontsize = 120
 
 		# FONT
 		self.font_name = ""
-		self.default_fontsize = 20
+		self.default_fontsize = 30
 		
 		# PDF
 		self.pdf = canvas.Canvas("output.pdf", pagesize=self.size, bottomup=False)
@@ -104,7 +105,7 @@ class Renderer:
 		title = parts[1]
 
 		# ? This chooses the font size according to the depth of the title
-		pdf.setFont(self.font_name, 102 - (len(hashes) * 20)) 
+		pdf.setFont(self.font_name, self.title_fontsize - (len(hashes) * 20)) 
 		pdf.drawCentredString(coord[0], coord[1], title)
 		pdf.setFont(self.font_name, self.default_fontsize)
 
