@@ -139,14 +139,21 @@ class Layout:
 		"""
 		max_titles = 5 # ? HARD CODED : Max number of titles
 		top_margin = 50 # ? HARD CODED : Margin at the top of the page
-		side_margin = 400 # ? HARD CODED : Margin Sides
+		side_margin = 100 # ? HARD CODED : Margin Sides
+		inter_title = 10 # ? HARD CODED : Interline between titles
 
 		font_size_title = int(slide.configs.settings["font-title"])
-		nb_titles = len(slide.items["titles"][:max_titles])
+		titles = slide.items["titles"][:max_titles]
+		nb_titles = len(titles)
+		
+		place_titles = top_margin + inter_title * nb_titles 
+		for t in titles:
+			_, s = slide.configs.get_font_size(t) 
+			place_titles += s
 
 		# Place taken by the titles in pixels
 		# ? Need interline ?
-		place_titles = top_margin + font_size_title * nb_titles
+		#place_titles = top_margin + font_size_title * nb_titles
 		print(f"{place_titles = }")
 
 		# Compute the rest to be 100% - place_titles
@@ -161,9 +168,11 @@ class Layout:
 		# ---------- Titles ----------
 		chunk_y_titles = place_titles / nb_titles # space between each title
 		list_coords_titles = [] # [(x, y), (x, y)]
-		for i, title in enumerate(slide.items["titles"][:max_titles]):
-			y = top_margin + chunk_y_titles * i + chunk_y_titles / 2
-			list_coords_titles.append((cx, y))
+		y_offset = top_margin
+		for title in titles:
+			_, s = slide.configs.get_font_size(title)
+			y_offset += s + inter_title
+			list_coords_titles.append((cx, y_offset, self.size[0] - side_margin, s))
 
 		coords["titles"] = list_coords_titles
 		print(coords)

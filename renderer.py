@@ -69,8 +69,6 @@ class Renderer:
 			for i, c in enumerate(coord):
 				drawer(self.pdf, slide.items[key][i], c)
 
-			#		drawer(self.pdf, item, coord[0], coord[1]) 
-
 	def __draw_paragraph(self, pdf : canvas.Canvas, paragraph : str, coord : tuple):
 		"""
 			This draws a paragraph
