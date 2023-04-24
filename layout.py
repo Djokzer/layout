@@ -56,6 +56,7 @@ class Layout:
 		# Count the number of main items
 		mains = len(slide.items["images"]) + len(slide.items["paragraphs"]) + len(slide.items["olists"]) + len(slide.items["ulists"]) + len(slide.items["codes"])
 
+		print(f"{mains = }")
 		if mains > 2:
 			layout = SlideLayout.NOT_IMPLEMENTED
 		else:
@@ -63,6 +64,7 @@ class Layout:
 
 		# Note : The order of theses checks will be repercuted in the order
 		# they are displayed in the pdf
+		# TODO : make this better, its ugly
 		main_items_types = []
 		if len(slide.items["images"]) > 0:
 			main_items_types.append("images")
@@ -101,10 +103,10 @@ class Layout:
 		"""
 		
 		layout, types = self.select(self.slide)
-		# TODO : Wtf, make that a list of functions or something
+		# TODO : Wtf, make that a list or dict of functions or something
 		if layout == SlideLayout.NOMAIN:
 			coords = self.__nomain_layout(slide, size, coords, types)
-		if layout == SlideLayout.SINGLE:
+		elif layout == SlideLayout.SINGLE:
 			coords = self.__single_layout(slide, size, coords, types)
 		elif layout == SlideLayout.DOUBLE:
 			coords = self.__double_layout(slide, size, coords, types)
@@ -115,13 +117,41 @@ class Layout:
 
 		return coords
 	
-	def __nomain_layout(self, slide : Slide, size : tuple, coord : dict, types : list):
+	def __nomain_layout(self, slide : Slide, size : tuple, coords : dict, types : list) -> dict:
 		"""
 			This will return the coordinates of every items
 			for a slide with no main content
+			The title will be centered on the page, and the more titles there are
+			the more they will spread up and down
+
+			args:
+				slide (Slide) : slide to process
+				size (tuple) : size of the pdf page (width, height)
+				coords (dict) : coordinates of each item in the slide
+				types (list[str]) : list of the types of main items
+			returns:
+				coords (dict) : centered coordinates x, y + max width, max height
 		"""
-		pass
-	
+		# There should only be titles there
+		horizontal_margin = 100 # Left and Right
+		max_titles = 5 			# ? HARD CODED : Max number of titles
+		titles = slide.items["titles"][:max_titles]
+		nb_titles = len(titles)
+
+		list_coords_titles = [] # [(x, y), (x, y)]
+		cx = (size[0] - horizontal_margin) / 2 + (horizontal_margin / 2)
+
+		def get_title_y_coordinates(num_titles):
+			delta_y = size[1] / (num_titles + 1)
+			return [delta_y * (i + 1) for i in range(num_titles)]
+
+		for i in range(nb_titles):
+			# Center titles on each chunky
+			list_coords_titles.append((cx, get_title_y_coordinates(nb_titles)[i]))
+
+		coords["titles"] = list_coords_titles
+
+		return coords
 
 
 	def __single_layout(self, slide : Slide, size : tuple, coords : dict, types : list) -> dict:
@@ -151,11 +181,6 @@ class Layout:
 			_, s = slide.configs.get_font_size(t) 
 			place_titles += s
 
-		# Place taken by the titles in pixels
-		# ? Need interline ?
-		#place_titles = top_margin + font_size_title * nb_titles
-		print(f"{place_titles = }")
-
 		# Compute the rest to be 100% - place_titles
 		max_main_size = (self.size[1] - place_titles) 
 		print(f"{max_main_size = }")
@@ -166,8 +191,7 @@ class Layout:
 		cx = self.size[0] / 2 # Centered x
 
 		# ---------- Titles ----------
-		chunk_y_titles = place_titles / nb_titles # space between each title
-		list_coords_titles = [] # [(x, y), (x, y)]
+		list_coords_titles = [] # [(x, y, mw, mh), (x, y, mw, mh)]
 		y_offset = top_margin
 		for title in titles:
 			_, s = slide.configs.get_font_size(title)
@@ -175,7 +199,6 @@ class Layout:
 			list_coords_titles.append((cx, y_offset, self.size[0] - side_margin, s))
 
 		coords["titles"] = list_coords_titles
-		print(coords)
 
 		# ---------- Main item ----------
 		# Giving centered x and y

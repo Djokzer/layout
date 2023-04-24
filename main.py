@@ -52,7 +52,9 @@ def report():
 def test1():
 	
 	s = Slides("single_slide.md")
-	r = Renderer(s, (1920, 1080))
+	r = Renderer("nomain.pdf", s, (1920, 1080))
+
+
 
 
 if __name__ == "__main__":

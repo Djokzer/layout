@@ -18,17 +18,6 @@ class Slides:
 
 	def get(self) -> tuple:
 		"""
-			Returns the slides and the configs
-			args:
-				None
-			returns:
-				(list[Slide], Config) : list of slides and the configs
-		"""
-		return self.configs, self.slides
-		
-
-	def get(self) -> tuple:
-		"""
 			This gives us the raw markdown file, the configs and the slides
 			args:
 				None
@@ -60,7 +49,7 @@ class Slides:
 		"""
 		import re
 		md = ""
-		with open(self.filename) as f:
+		with open(filename) as f:
 			md = f.read()
 		# Clean up a bit
 		return re.sub(r'\n+', '\n', md)
@@ -80,4 +69,6 @@ class Slides:
 		# get rid of the config header
 		out = md.split('---', 2)[-1]
 		#print(f"{out.split('---')=}")
-		return out.split("---")
+		out = filter(None, out.split('---'))
+
+		return out
