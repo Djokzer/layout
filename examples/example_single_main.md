@@ -37,9 +37,32 @@ As much as we like to think we're invincible, we're not. But what if we were to 
 # This is just some random code
 ### It's ugly for now but it still in dev
 ```rust
-fn main() -> i32
-{
-	println!("Hello Graham!");
-	return 69;
+async fn main() {
+    let mut emitter = Emitter::new(EmitterConfig {
+        lifetime: 0.5,
+        amount: 5,
+        initial_direction_spread: 0.0,
+        initial_velocity: -50.0,
+        size: 2.0,
+        size_curve: Some(Curve {
+            points: vec![(0.0, 0.5), (0.5, 1.0), (1.0, 0.0)],
+            ..Default::default()
+        }),
+
+        blend_mode: BlendMode::Additive,
+        ..Default::default()
+    });
+
+    loop {
+        clear_background(BLACK);
+
+        let camera = Camera2D::from_display_rect(Rect::new(0.0, 0.0, 100.0, 100.0));
+
+        set_camera(&camera);
+
+        emitter.draw(vec2(50., 50.));
+
+        next_frame().await
+    }
 }
 ```
