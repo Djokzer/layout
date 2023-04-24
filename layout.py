@@ -37,8 +37,12 @@ class Layout:
 		self.slide = slide
 		self.size = size
 		self.coords = {}
+		
+		# These are the types considered as main items
+		self.types_main_content = ["images", "paragraphs", "olists", "ulists", "codes"]
+		
 		self.coords = self.__get_layout(self.slide, self.coords, self.size)
-
+		
 		print(f"{self.coords = }")
 
 	def get_cords(self):
@@ -56,6 +60,9 @@ class Layout:
 		# Count the number of main items
 		mains = len(slide.items["images"]) + len(slide.items["paragraphs"]) + len(slide.items["olists"]) + len(slide.items["ulists"]) + len(slide.items["codes"])
 
+		print()
+		print(f"{slide.items = }")
+		print()
 		print(f"{mains = }")
 		if mains > 2:
 			layout = SlideLayout.NOT_IMPLEMENTED
@@ -66,17 +73,10 @@ class Layout:
 		# they are displayed in the pdf
 		# TODO : make this better, its ugly
 		main_items_types = []
-		if len(slide.items["images"]) > 0:
-			main_items_types.append("images")
-		if len(slide.items["paragraphs"]) > 0:
-			main_items_types.append("paragraphs")
-		if len(slide.items["olists"]) > 0:
-			main_items_types.append("olists")
-		if len(slide.items["ulists"]) > 0:
-			main_items_types.append("ulists")
-		if len(slide.items["codes"]) > 0:
-			main_items_types.append("codes")
-
+		for item_type in self.types_main_content:
+			if len(slide.items[item_type]) > 0:
+				main_items_types.append(item_type)
+	
 		return layout, main_items_types 
 	
 	def __get_layout(self, slide : Slide, coords : dict, size : tuple) -> dict: 
@@ -167,16 +167,18 @@ class Layout:
 			returns:
 				coords (dict) : centered coordinates x, y + max width, max height
 		"""
+		# TODO : %s ? or something better than hard coded values
 		max_titles = 5 # ? HARD CODED : Max number of titles
 		top_margin = 50 # ? HARD CODED : Margin at the top of the page
+		bot_margin = 100 # ? HARD CODED : Margin at the bot of the page
 		side_margin = 100 # ? HARD CODED : Margin Sides
+		title_main_margin = 50 # ? HARD CODED : Margin between title(s) and main content
 		inter_title = 10 # ? HARD CODED : Interline between titles
 
-		font_size_title = int(slide.configs.settings["font-title"])
 		titles = slide.items["titles"][:max_titles]
 		nb_titles = len(titles)
 		
-		place_titles = top_margin + inter_title * nb_titles 
+		place_titles = top_margin + inter_title * nb_titles + title_main_margin
 		for t in titles:
 			_, s = slide.configs.get_font_size(t) 
 			place_titles += s
@@ -202,9 +204,12 @@ class Layout:
 
 		# ---------- Main item ----------
 		# Giving centered x and y
-		list_coords_items = [] # [(x, y, mw), (x, y, mw)]
+		list_coords_items = [] # [(x, y, mw, mh), (x, y, mw, mh)]
 		cy = place_titles + max_main_size / 2 # center y
-		list_coords_items.append((cx, cy, self.size[0] - side_margin, max_main_size))
+		print(f"{max_main_size = }")
+		print(f"{cx = } {cy = }")
+		print(f"{place_titles = }")
+		list_coords_items.append((cx, cy, self.size[0] - side_margin, max_main_size - bot_margin))
 
 		coords[types[0]] = list_coords_items
 

@@ -69,6 +69,7 @@ class Slides:
 		# get rid of the config header
 		out = md.split('---', 2)[-1]
 		#print(f"{out.split('---')=}")
-		out = filter(None, out.split('---'))
+		out = map(lambda x: x.strip(), out.split('---'))
+		out = filter(None, out)
 
 		return out

@@ -10,13 +10,12 @@ from slide import Slide
 from layout import Layout
 
 from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
-from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import mm
+from reportlab.lib.utils import ImageReader
+
 
 
 class Renderer:
@@ -47,8 +46,8 @@ class Renderer:
 		self.drawers = {
 			"titles": self.__draw_title,
 			"paragraphs": self.__draw_paragraph,
+			"images" : self.__draw_image,
 		}
-		# "images" : self.__draw_image,
 		# "olists" : self.__draw_olist,
 		# "ulists" : self.__draw_ulist,
 		# "codes" : self.__draw_code}
@@ -85,8 +84,6 @@ class Renderer:
 				None
 		"""
 		cx, cy, mw, mh = coord
-		print(len(coord))
-		# pdf.line(0, cy, self.size[0], cy)
 		# ? This is the style of the paragraph
 		styles = getSampleStyleSheet()
 		styleN = styles["Normal"]
@@ -120,6 +117,44 @@ class Renderer:
 		pdf.setFont(self.font_name, title_size)
 		pdf.drawCentredString(coord[0], coord[1], title)
 		pdf.setFont(self.font_name, self.default_fontsize)
+
+	def __draw_image(self, pdf: canvas.Canvas, image_obj: str, coord: tuple):
+		"""
+		This draws an image
+		args:
+				pdf (canvas.Canvas) : pdf to add the image to
+				image_obj (str) : Markdown image (![]())
+				coord (tuple) : coordinates of the image
+		returns:
+				None
+		"""
+		from PIL import Image
+
+		cx, cy, mw, mh = coord
+		# Extract the image from md line
+		img_path = image_obj.split("(")[1].split(")")[0]
+
+		img = Image.open(img_path).transpose(Image.FLIP_TOP_BOTTOM)
+		img = ImageReader(img)
+
+		iw, ih = img.getSize()
+		ar = float(iw) / float(ih) # Aspect ratio
+
+		if ar > float(mw) / float(mh):
+			sf = float(mw) / float(iw)
+		else:
+			sf = float(mh) / float(ih)
+
+		nw = int(iw * sf)
+		nh = int(ih * sf)
+
+		x = cx - nw / 2
+		y = cy - nh / 2
+
+		# Rotate the canvas when drawing the image because of their shitty bottomup system
+		pdf.drawImage(img, x, y, width=nw, height=nh)
+		#pdf.rotate(90)
+		#pdf.drawImage(img_path, cx - mw / 2, cy - mh / 2, width=mw, height=mh)
 
 	def __pdf_setup(self, pdf: canvas.Canvas, configs: Config):
 		self.pdf.setAuthor(self.configs.settings["author"])
