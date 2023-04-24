@@ -67,7 +67,6 @@ class Layout:
 
 		# Note : The order of theses checks will be repercuted in the order
 		# they are displayed in the pdf
-		# TODO : make this better, its ugly
 		main_items_types = []
 		for item_type in self.types_main_content:
 			if len(slide.items[item_type]) > 0:
@@ -149,7 +148,6 @@ class Layout:
 
 		return coords
 
-
 	def __single_layout(self, slide : Slide, size : tuple, coords : dict, types : list) -> dict:
 		"""
 			This will return the coordinates of every items
@@ -210,15 +208,6 @@ class Layout:
 		coords[types[0]] = list_coords_items
 
 		# ---------- Links ----------
-		# Add the links at the bottom
+		# TODO : Add the links at the bottom
 
 		return coords
-
-
-#self.titles 	= [] # str[]
-#self.paragraphs = [] # str[]
-#self.olists 	= [] # str[[str]]
-#self.ulists 	= [] # str[[str]]
-#self.images 	= [] # str[]
-#self.codes 		= [] # str[]
-#self.links 		= [] # str[]

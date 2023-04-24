@@ -4,7 +4,6 @@ from renderer import Renderer
 
 PATH_EXAMPLES = "examples"
 
-
 examples = ["example_nomain.md", "example_single_main.md"]
 
 def generate_examples():

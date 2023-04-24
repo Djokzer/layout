@@ -1,3 +1,4 @@
 **/reveal
 **/__pycache__
 **/.pytest_cache
+examples/*.pdf
