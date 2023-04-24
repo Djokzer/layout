@@ -35,7 +35,7 @@ As much as we like to think we're invincible, we're not. But what if we were to 
 ---
 
 # This is just some random code
-## It should look ok
+### It's ugly for now but it still in dev
 ```rust
 fn main() -> i32
 {

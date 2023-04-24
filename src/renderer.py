@@ -12,7 +12,7 @@ from layout import Layout
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
-from reportlab.platypus import Paragraph
+from reportlab.platypus import Paragraph, Preformatted
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
 
@@ -223,11 +223,37 @@ class Renderer:
 			returns:
 					None
 		"""
-		from code import code2img
-		import asyncio
+		from code import code2image
 
-		code_path =   asyncio.run(code2img(code, "codes"))
+		code_path =  code2image(code, "codes")
 		self.__draw_image(self.pdf, code_path, coord)
+
+		#cx, cy, mw, mh = coord
+		#styles = getSampleStyleSheet()
+
+		## Define a style for the code listing
+		#code_style = styles["Code"]
+		#code_style.fontName = self.font_name
+		#code_style.fontSize = self.default_fontsize
+		#code_style.leading = self.default_fontsize * 1.5
+
+		## Define the code to be displayed
+		#code = "def hello_world():\n    print('Hello, world!')"
+
+		## Highlight the code using Pygments
+		#highlighted_code = highlight(code, PythonLexer(), PdfFormatter())
+
+		## Create a Paragraph object for the code
+		#c = Paragraph(highlighted_code, code_style)
+
+		#w, h = c.wrapOn(pdf, mw, mh)
+
+		## Need some tricks to center because of their shitty bottomup system
+		#x = cx - w / 2
+		#y = cy - h + self.default_fontsize * 2 - h / 2
+		#c.drawOn(self.pdf, x, y)
+
+
 
 
 
