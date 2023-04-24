@@ -60,10 +60,6 @@ class Layout:
 		# Count the number of main items
 		mains = len(slide.items["images"]) + len(slide.items["paragraphs"]) + len(slide.items["olists"]) + len(slide.items["ulists"]) + len(slide.items["codes"])
 
-		print()
-		print(f"{slide.items = }")
-		print()
-		print(f"{mains = }")
 		if mains > 2:
 			layout = SlideLayout.NOT_IMPLEMENTED
 		else:
@@ -171,7 +167,7 @@ class Layout:
 		max_titles = 5 # ? HARD CODED : Max number of titles
 		top_margin = 50 # ? HARD CODED : Margin at the top of the page
 		bot_margin = 100 # ? HARD CODED : Margin at the bot of the page
-		side_margin = 100 # ? HARD CODED : Margin Sides
+		side_margin = 400 # ? HARD CODED : Margin Sides
 		title_main_margin = 50 # ? HARD CODED : Margin between title(s) and main content
 		inter_title = 10 # ? HARD CODED : Interline between titles
 

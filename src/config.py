@@ -6,8 +6,8 @@ class Config:
             "date": "01/01/2020",
             "theme": "",
             "font": "Arial",
-            "font-size": 50,  # default
-            "font-title": 120,  # default
+            "font-size-text": 50,  # default
+            "font-size-title": 120,  # default
         }
         self.__parse(configs)
 
@@ -23,7 +23,7 @@ class Config:
             config = config.replace(" ", "")  # remove spaces
             key, value = config.split(":")
             if key in self.settings:
-                if key == "font-title" or key == "font-size":
+                if key == "font-size-title" or key == "font-size-text":
                     value = int(value)
                 self.settings[key] = value
 
@@ -32,7 +32,7 @@ class Config:
                 This takes a title and returns the font size
                 and the title wihout the hashes,
                 it selects a font size according to the number of hashes
-                and the configured font-title
+                and the configured font-size-title
         Args:
                 title (str) : title of the slide
         Returns:
@@ -43,5 +43,5 @@ class Config:
         title = parts[1]
 
         # ? This chooses the font size according to the depth of the title
-        font_size = self.settings["font-title"] - (len(hashes) * 20)
+        font_size = self.settings["font-size-title"] - (len(hashes) * 20)
         return title, font_size

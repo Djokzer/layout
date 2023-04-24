@@ -17,7 +17,6 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
 
 
-
 class Renderer:
 	def __init__(self, output_file : str, slides: Slides, size: tuple):
 		"""
@@ -32,8 +31,8 @@ class Renderer:
 		self.size = size
 
 		# FONT
-		self.default_fontsize = int(slides.configs.settings["font-size"])
-		self.title_fontsize = int(slides.configs.settings["font-title"])
+		self.default_fontsize = int(slides.configs.settings["font-size-text"])
+		self.title_fontsize = int(slides.configs.settings["font-size-title"])
 		self.font_name = slides.configs.settings["font"]
 
 		# PDF
@@ -47,10 +46,9 @@ class Renderer:
 			"titles": self.__draw_title,
 			"paragraphs": self.__draw_paragraph,
 			"images" : self.__draw_image,
-		}
-		# "olists" : self.__draw_olist,
-		# "ulists" : self.__draw_ulist,
-		# "codes" : self.__draw_code}
+			"olists" : self.__draw_olist,
+			"ulists" : self.__draw_ulist,
+			"codes" : self.__draw_code}
 
 		self.__render_slides(self.pdf, self.lst_slides)
 
@@ -79,7 +77,7 @@ class Renderer:
 		args:
 				pdf (canvas.Canvas) : pdf to add the paragraph to
 				paragraph (str) : paragraph to draw
-				coord (tuple) : centered coordinates of the paragraph + max width, max height
+				coord (tuple) : (x, y, max_width, max_height)
 		returns:
 				None
 		"""
@@ -107,7 +105,7 @@ class Renderer:
 		args:
 				pdf (canvas.Canvas) : pdf to add the titles to
 				title (str) : title to draw
-				coord (tuple) : coordinates of the title
+				coord (tuple) : (x, y)
 		returns:
 				None
 		"""
@@ -124,16 +122,21 @@ class Renderer:
 		args:
 				pdf (canvas.Canvas) : pdf to add the image to
 				image_obj (str) : Markdown image (![]())
-				coord (tuple) : coordinates of the image
+				coord (tuple) : (x, y, max_width, max_height)
 		returns:
 				None
 		"""
+		# TODO: Add caption under the image
 		from PIL import Image
 
 		cx, cy, mw, mh = coord
-		# Extract the image from md line
-		img_path = image_obj.split("(")[1].split(")")[0]
 
+		# Extract the image from md line
+		# ! Little hack for now, to be able to give a direct path to the image
+		if image_obj.startswith("!"):
+			img_path = image_obj.split("(")[1].split(")")[0]
+		else:
+			img_path = image_obj
 		img = Image.open(img_path).transpose(Image.FLIP_TOP_BOTTOM)
 		img = ImageReader(img)
 
@@ -153,8 +156,80 @@ class Renderer:
 
 		# Rotate the canvas when drawing the image because of their shitty bottomup system
 		pdf.drawImage(img, x, y, width=nw, height=nh)
-		#pdf.rotate(90)
-		#pdf.drawImage(img_path, cx - mw / 2, cy - mh / 2, width=mw, height=mh)
+
+	# NOTE : Maybe merge both type of lists because they feel pretty similar
+	def __draw_olist(self, pdf: canvas.Canvas, olist: list[str], coord: tuple):
+		"""
+		This draws an ordered list
+		args:
+				pdf (canvas.Canvas) : pdf to add the list to
+				olist (list[str]) : ordered list to draw
+				coord (tuple) : (x, y, max_width, max_height)
+		returns:
+				None
+		"""
+		cx, cy, mw, mh = coord
+
+		styles = getSampleStyleSheet()
+		styleN = styles["Normal"]
+		styleN.fontName = self.font_name
+		styleN.fontSize = self.default_fontsize
+		styleN.leading = self.default_fontsize * 1.5
+		styleN.alignment = 4 # Left aligned  
+
+		p = Paragraph("<br/>".join(olist), styleN)
+		w, h = p.wrapOn(pdf, mw, mh)
+
+		# Need some tricks to center because of their shitty bottomup system
+		x = cx - w / 2
+		y = cy - h + self.default_fontsize * 2 - h / 2
+		p.drawOn(self.pdf, x, y)
+
+	def __draw_ulist(self, pdf: canvas.Canvas, olist: list[str], coord: tuple):
+		"""
+		This draws an unordered list
+		args:
+				pdf (canvas.Canvas) : pdf to add the list to
+				olist (list[str]) : unordered list to draw
+				coord (tuple) : (x, y, max_width, max_height)
+		returns:
+				None
+		"""
+		cx, cy, mw, mh = coord
+
+		styles = getSampleStyleSheet()
+		styleN = styles["Normal"]
+		styleN.fontName = self.font_name
+		styleN.fontSize = self.default_fontsize
+		styleN.leading = self.default_fontsize * 1.5
+		styleN.alignment = 4 # Left aligned  
+
+		p = Paragraph("<br/>".join(olist), styleN)
+		w, h = p.wrapOn(pdf, mw, mh)
+
+		# Need some tricks to center because of their shitty bottomup system
+		x = cx - w / 2
+		y = cy - h + self.default_fontsize * 2 - h / 2
+		p.drawOn(self.pdf, x, y)
+
+	def __draw_code(self, pdf: canvas.Canvas, code: str, coord: tuple):
+		"""
+			This creates an image of the code with
+			carbon.now.sh and and draws it on the pdf
+			args:
+					pdf (canvas.Canvas) : pdf to add the code to
+					code (str) : code to draw
+					coord (tuple) : (x, y, max_width, max_height)
+			returns:
+					None
+		"""
+		from code import code2img
+		import asyncio
+
+		code_path =   asyncio.run(code2img(code, "codes"))
+		self.__draw_image(self.pdf, code_path, coord)
+
+
 
 	def __pdf_setup(self, pdf: canvas.Canvas, configs: Config):
 		self.pdf.setAuthor(self.configs.settings["author"])

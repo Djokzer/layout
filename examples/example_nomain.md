@@ -3,8 +3,8 @@ title: Simple
 author: John Doe
 date: 2018-01-01
 font: fonts/Economica-Bold.ttf
-font-size: 50
-font-title: 150
+font-size-text: 50
+font-size-title: 150
 ---
 
 # Single title
