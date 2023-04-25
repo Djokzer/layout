@@ -40,7 +40,7 @@ class Renderer:
         self.pdf = canvas.Canvas(
             output_file, pagesize=self.size, bottomup=False)
         self.__pdf_setup(self.pdf, self.configs)
-        self.current_page = 0
+        self.current_page = 1
 
         # Dict of drawers, for each type of item
         self.drawers = {
@@ -66,15 +66,23 @@ class Renderer:
         for key, coord in coords.items():  # For each available items types
             drawer = self.drawers[key]  # Get the drawer
             for i, c in enumerate(coord):
-                print(f"{i = }")
-                print(f"{c = }")
-                # c = (680.0, 720.0, 560, 620)
-                if len(c) >= 4:
-                    self.pdf.line(c[0] - c[2] // 2, c[1],
-                                  c[0] + c[2] // 2, c[1])
-                    self.pdf.line(c[0], c[1] - c[3] //
-                                  2, c[0], c[1] + c[3] // 2)
+                # if len(c) >= 4:
+                #      self.pdf.line(c[0] - c[2] // 2, c[1],
+                #                    c[0] + c[2] // 2, c[1])
+                #      self.pdf.line(c[0], c[1] - c[3] //
+                #                    2, c[0], c[1] + c[3] // 2)
                 drawer(self.pdf, slide.items[key][i], c)
+
+                # Add slide number
+                # ? HARD CODED FOR NOW
+                # TODO : Compute according to number of digits and font size
+                self.pdf.setFont(self.font_name, 40)
+                self.pdf.drawString(self.size[0] - 150,
+                                    self.size[1] - 20,
+                                    f"{self.current_page} / {len(self.lst_slides)}")
+                self.pdf.drawString(50,
+                                    self.size[1] - 20,
+                                    f"{slide.configs.settings['author']}")
 
     def __draw_paragraph(self, pdf: canvas.Canvas, paragraph: str, coord: tuple):
         """

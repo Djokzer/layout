@@ -20,7 +20,7 @@ class Config:
                 None
         """
         for config in configs:
-            config = config.replace(" ", "")  # remove spaces
+            config = config.replace(": ", ":")  # remove spaces
             key, value = config.split(":")
             if key in self.settings:
                 if key == "font-size-title" or key == "font-size-text":
