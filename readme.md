@@ -1,6 +1,5 @@
 # Layout
-I want to build an easy tool to create beautiful presentation with simple markdown based syntax. A simple layout would be estimated from the slide content. 
-
+Simple markdown to pdf presentation tool
 
 ## Tests
 ```bash
