@@ -14,14 +14,11 @@ class SlideLayout(Enum):
 	# ENUM FOR LAYOUTS
 	# The layout is based on the number of main items in the slide
 	# Main items are images, texts, lists or codes
-	# ? Idea : Titled content (sub titles are for the main items)
-	# ? Idea : Parse the content differently to pick a layout in markdown
 	NOMAIN = 0
 	SINGLE = 1
 	DOUBLE = 2
 	TRIPLE = 3
 	NOT_IMPLEMENTED = 4
-
 
 class Layout:
 
@@ -256,7 +253,7 @@ class Layout:
 		max_titles = 5  # ? HARD CODED : Max number of titles
 		top_margin = 50  # ? HARD CODED : Margin at the top of the page
 		bot_margin = 100  # ? HARD CODED : Margin at the bot of the page
-		side_margin = 400  # ? HARD CODED : Margin Sides
+		side_margin = 100  # ? HARD CODED : Margin Sides
 		# ? HARD CODED : Margin between title(s) and main content
 		title_main_margin = 50
 		inter_title = 10  # ? HARD CODED : Interline between titles

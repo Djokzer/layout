@@ -1,10 +1,11 @@
 ---
 title: Simple
-author: John Doe
+author: Handsome Graham
 date: 2018-01-01
 font: fonts/Economica-Bold.ttf
-font-size-text: 40
-font-size-title: 150
+font-size-text: 30
+font-size-title: 100
+progress-thickness: 15
 ---
 
 # This, is GRAHAM !
@@ -15,6 +16,12 @@ Hellow
 
 ---
 # Text and image?
+![This is graham](examples/assets/graham1.jpg)
+This is graham, A god among us
+
+---
+# Text and image?
+## Is this at the same height
 ![This is graham](examples/assets/graham1.jpg)
 This is graham, A god among us
 

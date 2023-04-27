@@ -1,6 +1,6 @@
 ---
 title: Simple
-author: John Doe
+author: Handsome Graham
 date: 2018-01-01
 font: fonts/Economica-Bold.ttf
 font-size-text: 50

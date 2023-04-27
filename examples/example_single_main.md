@@ -1,10 +1,10 @@
 ---
 title: Simple
-author: John Doe
+author: Handsome Graham
 date: 2018-01-01
 font: fonts/Economica-Bold.ttf
-font-size-text: 50
-font-size-title: 150
+font-size-text: 40
+font-size-title: 100
 ---
 
 # This, is GRAHAM !
