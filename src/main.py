@@ -1,6 +1,7 @@
 from slides import Slides
 from config import Config
 from renderer import Renderer
+from typing import List, Tuple, Dict
 
 def main():
 	s = Slides("simple.md")

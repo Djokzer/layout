@@ -5,15 +5,13 @@ from renderer import Renderer
 PATH_EXAMPLES = "examples"
 
 examples = ["example_nomain.md",
-            "example_single_main.md", "example_double_main.md"]
-# examples = ["example_double_main.md"]
-
+            "example_single_main.md", 
+            "example_double_main.md"]
 
 def generate_examples():
     import os
     for example in examples:
-        #  remove file extension
-        ex = example.split(".")[0]
+        ex = example.split(".")[0]  #  remove file extension
 
         print(f"Generating {ex} ...")
         s = Slides(f"{PATH_EXAMPLES}/{example}")

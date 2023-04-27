@@ -1,10 +1,13 @@
 import re
 from config import Config
+from typing import List, Tuple, Dict
 
 
 class Slide:
 
-    def __init__(self, slide: str, configs: Config) -> None:
+    def __init__(self, 
+				 slide: str, 
+				 configs: Config) -> None:
         # ? PUT THAT INT DICT ?
         self.slide = slide
         self.configs = configs
@@ -19,13 +22,13 @@ class Slide:
         }
         self.parse(slide)
 
-    def parse(self, slide: str) -> None:
+    def parse(self, 
+              slide: str):
         """
                 Parse a slide and fill the attributes
                 args:
-                        slide (str) : slide to parse
-                returns:
-                        None
+                        slide (str) : 
+                        	slide to parse
         """
 
         slide, self.items["codes"] = self.extract_code_blocks(slide)
@@ -47,14 +50,18 @@ class Slide:
             else:
                 raise Exception(f"Couldn't parse line: {line}")
 
-    def __regex_detect(self, pattern, tested: str) -> bool:
+    def __regex_detect(self, 
+					   pattern, 
+					   tested: str) -> bool:
         """
                 Checks if a string matches a regex pattern
                 args:
-                        pattern (str) : regex pattern
-                        tested (str) : string to test
-                returns:
-                        (bool) : True if the string matches the pattern
+                        pattern (str) : 
+							regex pattern
+                        tested (str) : 
+							string to test
+                returns (bool):
+                    True if the string matches the pattern
         """
 
         if re.match(pattern, tested, flags=re.I | re.M):
@@ -62,14 +69,17 @@ class Slide:
         return False
 
     # TODO : REFACTOR THESE 3 ONES INTO ONE
-    def extract_code_blocks(self, slide: str) -> tuple:
+    def extract_code_blocks(self, 
+                            slide: str) -> Tuple[str, List[str]]:
         """
         Extracts the code blocks from a slide
         args:
-                slide (str) : slide to parse
-        returns:
-                (str) : slide without code blocks, 
-                (list[str]) : list of code blocks
+			slide (str) : 
+            	slide to parse
+        
+        returns (Tuple[str, List[str]]) :
+			(str) : slide without code blocks, 
+			(List[str]) : list of code blocks
         """
 
         pattern = re.compile(r"(```[\w+]*)\n(.*?)\n(```)", re.DOTALL)
@@ -80,14 +90,15 @@ class Slide:
         out_slide = pattern.sub('', slide)
         return out_slide, codes
 
-    def extract_olists(self, slide: str) -> tuple:
+    def extract_olists(self, 
+                       slide: str) -> Tuple[str, List[List[str]]]:
         """
         Extracts the ordered lists from a slide
         args:
-                slide (str) : slide to parse
-        returns:
-                (str) : slide without ordered lists
-                (list[list[str]]) : list of ordered lists
+			slide (str) : slide to parse
+        returns (Tuple[str, List[List[str]]]):
+			(str) : slide without ordered lists
+			(list[list[str]]) : list of ordered lists
         """
         olists = []
 
@@ -108,14 +119,18 @@ class Slide:
 
         return out_slide, olists
 
-    def extract_ulists(self, slide: str) -> tuple:
+    def extract_ulists(self, 
+                       slide: str) -> Tuple[str, List[List[str]]]:
         """
         Extracts the unordered lists from a slide
         args:
-                slide (str) : slide to parse
-        returns:
-                (str) : slide without unordered lists
-                (list[list[str]]) : list of unordered lists
+			slide (str) : 
+            	slide to parse
+        returns (Tuple[str, List[List[str]]]):
+			(str) : 
+            	slide without unordered lists
+			(List[List[str]]) : 
+            	list of unordered lists
         """
         ulists = []
 
@@ -136,16 +151,20 @@ class Slide:
 
         return out_slide, ulists
 
-    def __is_image(self, line: str):
+    def __is_image(self, 
+                   line: str):
         # True if it matches the chars in join in order
         return self.__regex_detect(r'!\[.*\]\(.*\)', line)
 
-    def __is_link(self, line: str):
+    def __is_link(self, 
+                  line: str):
         # True if it matches the chars in join in order
         return self.__regex_detect(r'\[.*\]\(.*\)', line)
 
-    def __is_title(self, line: str):
+    def __is_title(self, 
+                   line: str):
         return self.__regex_detect(r'^#+', line)
 
-    def __is_paragraph(self, line: str):
+    def __is_paragraph(self, 
+                       line: str):
         return self.__regex_detect(r'.*', line)

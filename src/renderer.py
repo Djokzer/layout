@@ -15,15 +15,23 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
+from typing import List, Tuple
 
 
 class Renderer:
-    def __init__(self, output_file: str, slides: Slides, size: tuple):
+    def __init__(self, 
+                 output_file: str,
+                 slides: Slides,
+                 size: Tuple[int, int]):
         """
         This class is used to render the slides into a pdf file
         args:
-                        slides (Slides) : slides to render
-                        size (tuple) : size of the pdf page (width, height)
+			output_file (str) :
+				path to the output file
+			slides (Slides) : 
+				slides to render
+			size (tuple) : 
+				size of the pdf page (width, height)
         """
 
         self.slides = slides
@@ -55,7 +63,9 @@ class Renderer:
 
         self.__pdf_save(self.pdf)
 
-    def __render_slides(self, pdf: canvas.Canvas, slides: list[Slide]):
+    def __render_slides(self, 
+                        pdf: canvas.Canvas,
+                    	slides: List[Slide]):
         for slide in slides:
             self.__render_slide(slide)
             self.__pdf_finish_page(pdf)
@@ -84,15 +94,20 @@ class Renderer:
                                     self.size[1] - 20,
                                     f"{slide.configs.settings['author']}")
 
-    def __draw_paragraph(self, pdf: canvas.Canvas, paragraph: str, coord: tuple):
+    def __draw_paragraph(self, 
+                         pdf: canvas.Canvas, 
+                         paragraph: str, 
+                         coord: Tuple[int, int, int, int]):
         """
         This draws a paragraph
         args:
-                        pdf (canvas.Canvas) : pdf to add the paragraph to
-                        paragraph (str) : paragraph to draw
-                        coord (tuple) : (x, y, max_width, max_height)
-        returns:
-                        None
+			pdf (canvas.Canvas) : 
+				pdf to add the paragraph to
+			paragraph (str) : 
+				paragraph to draw
+			coord (Tuple[int, int, int, int]) : 
+				(x, y, max_width, max_height)
+
         """
         cx, cy, mw, mh = coord
         # ? This is the style of the paragraph
@@ -111,33 +126,41 @@ class Renderer:
         y = cy - h + self.default_fontsize * 2 - h / 2
         p.drawOn(self.pdf, x, y)
 
-    def __draw_title(self, pdf: canvas.Canvas, title: str, coord: tuple):
+    def __draw_title(self, 
+                     pdf: canvas.Canvas, 
+                     title: str,
+                     coord: Tuple[int, int]):
         """
         This sets the font size accroding to the depth of the title
         and draws the title and resets the font size
         args:
-                        pdf (canvas.Canvas) : pdf to add the titles to
-                        title (str) : title to draw
-                        coord (tuple) : (x, y)
-        returns:
-                        None
+                        pdf (canvas.Canvas) : 
+                        	pdf to add the titles to
+                        title (str) : 
+                        	title to draw
+                        coord (tuple) : 
+                        	(x, y)
         """
-        title, title_size = self.configs.get_font_size(title)
+        title, title_size = self.configs.get_title_font_size(title)
 
         # ? This chooses the font size according to the depth of the title
         pdf.setFont(self.font_name, title_size)
         pdf.drawCentredString(coord[0], coord[1], title)
         pdf.setFont(self.font_name, self.default_fontsize)
 
-    def __draw_image(self, pdf: canvas.Canvas, image_obj: str, coord: tuple):
+    def __draw_image(self, 	
+                     pdf: canvas.Canvas, 
+                     image_obj: str, coord: 
+                     Tuple[int, int, int, int]):
         """
         This draws an image
         args:
-                        pdf (canvas.Canvas) : pdf to add the image to
-                        image_obj (str) : Markdown image (![]())
-                        coord (tuple) : (x, y, max_width, max_height)
-        returns:
-                        None
+                        pdf (canvas.Canvas) : 
+                        	pdf to add the image to
+                        image_obj (str) : 	
+                        	Markdown image (![]())
+                        coord (Tuple[int, int, int, int]) : 
+                        	(x, y, max_width, max_height)
         """
         # TODO: Add caption under the image
         from PIL import Image
@@ -171,15 +194,19 @@ class Renderer:
         pdf.drawImage(img, x, y, width=nw, height=nh)
 
     # TODO : Maybe merge both type of lists because they feel pretty similar
-    def __draw_olist(self, pdf: canvas.Canvas, olist: list[str], coord: tuple):
+    def __draw_olist(self, 
+                     pdf: canvas.Canvas, 
+                     olist: List[str], 
+                     coord: Tuple[int, int, int, int]):
         """
         This draws an ordered list
         args:
-                        pdf (canvas.Canvas) : pdf to add the list to
-                        olist (list[str]) : ordered list to draw
-                        coord (tuple) : (x, y, max_width, max_height)
-        returns:
-                        None
+                        pdf (canvas.Canvas) : 
+                        	pdf to add the list to
+                        olist (list[str]) : 
+                        	ordered list to draw
+                        coord (Tuple[int, int, int, int]) : 
+                        	(x, y, max_width, max_height)
         """
         cx, cy, mw, mh = coord
 
@@ -198,15 +225,19 @@ class Renderer:
         y = cy - h + self.default_fontsize * 2 - h / 2
         p.drawOn(self.pdf, x, y)
 
-    def __draw_ulist(self, pdf: canvas.Canvas, olist: list[str], coord: tuple):
+    def __draw_ulist(self, 
+                     pdf: canvas.Canvas, 
+                     olist: List[str], 
+                     coord: Tuple[int, int, int, int]):
         """
         This draws an unordered list
         args:
-                        pdf (canvas.Canvas) : pdf to add the list to
-                        olist (list[str]) : unordered list to draw
-                        coord (tuple) : (x, y, max_width, max_height)
-        returns:
-                        None
+                        pdf (canvas.Canvas) : 
+							pdf to add the list to
+                        olist (List[str]) : 
+							unordered list to draw
+                        coord (Tuple[int, int, int, int]) : 
+							(x, y, max_width, max_height)
         """
         cx, cy, mw, mh = coord
 
@@ -225,39 +256,48 @@ class Renderer:
         y = cy - h + self.default_fontsize * 2 - h / 2
         p.drawOn(self.pdf, x, y)
 
-    def __draw_code(self, pdf: canvas.Canvas, code: str, coord: tuple):
+    def __draw_code(self, 
+					pdf: canvas.Canvas, 
+					code: str, 
+					coord: Tuple[int, int, int, int]):
         """
                 This creates an image of the code with
                 carbon.now.sh and and draws it on the pdf
                 args:
-                                pdf (canvas.Canvas) : pdf to add the code to
-                                code (str) : code to draw
-                                coord (tuple) : (x, y, max_width, max_height)
+                                pdf (canvas.Canvas) : 
+									pdf to add the code to
+                                code (str) : 
+									code to draw
+                                coord (Tuple[int, int, int, int]) : 
+									(x, y, max_width, max_height)
                 returns:
                                 None
         """
-        from code import code2image
+        from img_code import code2image
 
         # Temp, used to generate the image of the code
         code_path = code2image(code, "examples/assets/codes")
 
         self.__draw_image(self.pdf, code_path, coord)
 
-    def __pdf_setup(self, pdf: canvas.Canvas, configs: Config):
+    def __pdf_setup(self, 
+					pdf: canvas.Canvas, 
+					configs: Config):
         self.pdf.setAuthor(self.configs.settings["author"])
         self.pdf.setTitle(self.configs.settings["title"])
         self.pdf.setSubject(self.configs.settings["date"])
 
         self.font_name = self.configs.settings["font"].split(
             "/")[-1].split(".")[0]
-        print(self.font_name)
         pdfmetrics.registerFont(
             TTFont(self.font_name, configs.settings["font"]))
         self.pdf.setFont(self.font_name, self.default_fontsize)
 
-    def __pdf_finish_page(self, pdf: canvas.Canvas):
+    def __pdf_finish_page(self, 
+                          pdf: canvas.Canvas):
         self.pdf.showPage()
         self.current_page += 1
 
-    def __pdf_save(self, pdf: canvas.Canvas):
+    def __pdf_save(self, 
+                   pdf: canvas.Canvas):
         self.pdf.save()

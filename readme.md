@@ -14,8 +14,8 @@ python examples.py
 
 
 # Sources and Inspirations
-https://docs.reportlab.com/
-Carbon API : https://github.com/ShivangKakkar/Carbon
-Slide terminal : https://github.com/maaslalani/slides
-Suckless Sent : https://tools.suckless.org/sent/  
-Best font : https://fonts.google.com/specimen/Economica
+https://docs.reportlab.com/ 
+Carbon API : https://github.com/ShivangKakkar/Carbon   
+Slide terminal : https://github.com/maaslalani/slides    
+Suckless Sent : https://tools.suckless.org/sent/   
+Best font : https://fonts.google.com/specimen/Economica   

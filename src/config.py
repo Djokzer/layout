@@ -27,7 +27,7 @@ class Config:
                     value = int(value)
                 self.settings[key] = value
 
-    def get_font_size(self, title: str) -> tuple:
+    def get_title_font_size(self, title: str) -> tuple:
         """
                 This takes a title and returns the font size
                 and the title wihout the hashes,
@@ -36,7 +36,7 @@ class Config:
         Args:
                 title (str) : title of the slide
         Returns:
-                (str, int) : title without the hashes, the font size
+                (str, int) : title without the '#'s, font size
         """
         parts = title.split(" ", 1)
         hashes = parts[0]
