@@ -14,12 +14,12 @@ python examples.py
 
 
 # TODOs
-[ ] LAYOUT : Titled content (sub titles are for the main items)
-[ ] LAYOUT : Double scalable, with markdown parameters
-[ ] LAYOUT : Make a growable vertical and horizontal layout with n main items
-[ ] Parse the content differently to pick a layout in markdown
-[ ] Parse the paragraphs differently to pick an alignment
-[ ] Abstract the titles for layouts with main(s)
+- [ ] LAYOUT : Titled content (sub titles are for the main items)
+- [ ] LAYOUT : Double scalable, with markdown parameters
+- [ ] LAYOUT : Make a growable vertical and horizontal layout with n main items
+- [ ] Parse the content differently to pick a layout in markdown
+- [ ] Parse the paragraphs differently to pick an alignment
+- [ ] Abstract the titles for layouts with main(s)
 
 ## Possible Implementations
 
