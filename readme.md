@@ -1,3 +1,6 @@
+This project is in active dev! 
+
+
 # Layout
 Simple markdown to pdf presentation tool based on custom layouts
 
