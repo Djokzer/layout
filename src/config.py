@@ -1,6 +1,9 @@
+from typing import List, Dict, Tuple
+
+
 class Config:
     def __init__(self, configs):
-        
+
         # These are the default settings
         self.settings = {
             "author": "author",
@@ -8,22 +11,22 @@ class Config:
             "date": "01/01/2020",
             "theme": "",
             "font": "Arial",
-            "font-size-text": 50,  		
-            "font-size-title": 120,  	
+            "font-size-text": 50,
+            "font-size-title": 120,
             "progress-thickness": 15,
         }
-        self.intable_settings = ["font-size-title", 
-                                 "font-size-text", 
+        self.intable_settings = ["font-size-title",
+                                 "font-size-text",
                                  "progress-thickness"]
         self.__parse(configs)
 
-    def __parse(self, configs):
+    def __parse(self,
+                configs: List[str]):
         """
         This parses the configs and fills the dictionary
         Args:
-                configs (list[str]): list of configs
-        Returns:
-                None
+            configs (List[str]):
+                list of configs
         """
         for config in configs:
             config = config.replace(": ", ":")  # remove spaces
@@ -34,16 +37,19 @@ class Config:
                     value = int(value)
                 self.settings[key] = value
 
-    def get_title_font_size(self, title: str) -> tuple:
+    def get_title_font_size(self,
+                            title: str) -> Tuple[str, int]:
         """
                 This takes a title and returns the font size
                 and the title wihout the hashes,
                 it selects a font size according to the number of hashes
                 and the configured font-size-title
         Args:
-                title (str) : title of the slide
+            title (str) : 
+                title of the slide
         Returns:
-                (str, int) : title without the '#'s, font size
+            (Tuple[str, int]) : 
+                title without the '#'s, font size
         """
         parts = title.split(" ", 1)
         hashes = parts[0]

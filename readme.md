@@ -12,14 +12,68 @@ Generate examples in examples folder:
 python examples.py
 ```
 
+## Pipeline
+
+1. Parsing
+2. Layout creation (gives pos of every items)
+3. Rendering of items on pdf
+
+
+### Files description
+```
+src
+├── config.py
+├── examples.py
+├── img_code.py
+├── layout.py
+├── main.py
+├── renderer.py
+├── slide.py
+├── slides.py
+└── test_parse.py
+```
+
+#### Config 
+- Config parsing
+- Config defaults
+- Where you add a new config
+
+#### examples
+- Create the example pdfs
+
+#### img_code
+- Create images from code
+- Change code theme 
+
+#### layout
+- Where the layout is chosen
+- Where the layout is parsed and outputs pos and size of main items
+- Where the layouts are defined
+- Where you add the layout(s)
+
+#### main
+- Not really used for now, use the examples
+
+#### renderer
+- Where the pdf is actually created
+- Where each item is actually drawned with passed pos
+- Where the page number, progress bar, and author are added
+
+#### slide
+- Where a single slide is parsed into items
+
+#### slide
+- Where the markdown is read
+- Where the config is read
+- Where each slides are separated and parsed
+
 
 # TODOs
+- [ ] Parse the content differently to pick a layout in markdown with parameters
+- [ ] Abstract the titles for layouts with main(s)
 - [ ] LAYOUT : Titled content (sub titles are for the main items)
 - [ ] LAYOUT : Double scalable, with markdown parameters
 - [ ] LAYOUT : Make a growable vertical and horizontal layout with n main items
-- [ ] Parse the content differently to pick a layout in markdown
-- [ ] Parse the paragraphs differently to pick an alignment
-- [ ] Abstract the titles for layouts with main(s)
 
 ## Possible Implementations
 
@@ -89,8 +143,24 @@ That would create a layout with 2 items,
 the first one taking 70% of the page and the second 30%
 
 ### Titled content
-- Only allow one title per item number
 
+**syntax : [TITLED]{title1, title2}**
+
+```markdown
+---
+title: Simple
+author: Handsome Graham
+---
+
+---[TITLED]{"This is a title", "This is a second title"}
+This is the first main titled content
+
+This is a second main titled content
+
+---
+
+  
+```
 
 
 # Sources and Inspirations
