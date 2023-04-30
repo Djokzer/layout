@@ -39,7 +39,7 @@ src
 #### Config 
 - Config parsing
 - Config defaults
-- Where you add a new config
+- Where you add a new possible config items for the markdown
 
 #### examples
 - Create the example pdfs
