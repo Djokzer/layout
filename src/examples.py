@@ -4,7 +4,7 @@ from renderer import Renderer
 
 PATH_EXAMPLES = "examples"
 
-examples = [#"example_nomain.md",
+examples = ["example_nomain.md",
             "example_single_main.md", 
             "example_double_main.md",
             "example_multiple_main_horizontal.md"]

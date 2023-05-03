@@ -15,10 +15,8 @@ class SlideLayout(Enum):
 	# The layout is based on the number of main items in the slide
 	# Main items are images, texts, lists or codes
 	NOMAIN = 0
-	SINGLE = 1
-	DOUBLE = 2
-	TRIPLE = 3
-	NOT_IMPLEMENTED = 4
+	MULTIPLE = 1
+	NOT_IMPLEMENTED = 2
 
 class Layout:
 
@@ -35,9 +33,7 @@ class Layout:
 
 		# Map the layout to the layout function
 		self.layouters = { 	SlideLayout.NOMAIN : self.__nomain_layout,
-							SlideLayout.SINGLE : self.__single_layout,
-							SlideLayout.DOUBLE : self.__horizontal_layout,
-							#SlideLayout.TRIPLE : self.__triple_layout,
+							SlideLayout.MULTIPLE : self.__horizontal_layout,
 		}
 		
 		# These are the types considered as main items
@@ -65,10 +61,10 @@ class Layout:
 		mains = len(slide.items["images"]) + len(slide.items["paragraphs"]) + len(
 			slide.items["olists"]) + len(slide.items["ulists"]) + len(slide.items["codes"])
 
-		if mains > 2:
-			layout = SlideLayout.NOT_IMPLEMENTED
+		if mains > 0:
+			layout = SlideLayout.MULTIPLE
 		else:
-			layout = SlideLayout(mains)
+			layout = SlideLayout.NOMAIN
 
 		# Note : The order of theses checks will be repercuted in the order
 		# they are displayed in the pdf
@@ -110,8 +106,11 @@ class Layout:
 		"""
 
 		layout, types = self.select(self.slide)
-		#coords = self.layouters[layout](slide, size, coords, types)
-		coords =self.__horizontal_layout(slide, size, coords, types)
+		if(layout == SlideLayout.NOMAIN):
+			coords = self.layouters[layout](slide, size, coords, types)
+		else:
+			coords = self.layouters[layout](slide, size, None, types)
+		
 		return coords
 
 
