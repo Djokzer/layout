@@ -1,5 +1,5 @@
 **/reveal
 **/__pycache__
 **/.pytest_cache
-# examples/*.pdf
+examples/*.pdf
 # examples/assets/codes/*
