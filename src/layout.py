@@ -334,7 +334,7 @@ class Layout:
 		title_main_margin = 50
 		inter_title = 10  # ? HARD CODED : Interline between titles
 		max_main_item = 5 # ? HARD CODED : Max number of main items
-		inter_margin = 30 
+		inter_margin = 30 # ? HARD CODED : Margin between main items
 		
 		coords = {}	# CORDINATES DICT
 
@@ -366,7 +366,7 @@ class Layout:
 		# KEEP ONLY MAIN ITEMS UNDER MAX
 		types = types[:max_main_item]
 
-		# TODO : Make this a formula
+		# TODO : Take params for scale
 		mainx = self.size[0] - side_margin * 2
 		mainy = max_main_size - bot_margin
 		item_width = mainx // len(types)
