@@ -36,7 +36,7 @@ class Layout:
 		# Map the layout to the layout function
 		self.layouters = { 	SlideLayout.NOMAIN : self.__nomain_layout,
 							SlideLayout.SINGLE : self.__single_layout,
-							SlideLayout.DOUBLE : self.__double_layout,
+							SlideLayout.DOUBLE : self.__horizontal_layout,
 							#SlideLayout.TRIPLE : self.__triple_layout,
 		}
 		
@@ -110,8 +110,10 @@ class Layout:
 		"""
 
 		layout, types = self.select(self.slide)
-		coords = self.layouters[layout](slide, size, coords, types)
+		#coords = self.layouters[layout](slide, size, coords, types)
+		coords =self.__horizontal_layout(slide, size, coords, types)
 		return coords
+
 
 	def __nomain_layout(self, 
 		     			slide: Slide, 
@@ -298,5 +300,89 @@ class Layout:
 
 		# ---------- Links ----------
 		# TODO : Add the links at the bottom
+
+		return coords
+
+	def __horizontal_layout(self, 
+			 				slide: Slide, 
+							size: Tuple[int, int],
+							params: List[str],
+							types: List[str]) -> Dict[str, List[ Tuple[int, int, int, int] ]]:
+		"""
+		This will return the coordinates of every items
+		for a slide with single or multiple main content,
+		in a horizontal layout
+
+		args:
+				slide (Slide) : 
+					slide to process
+				size (Tuple[int, int]) : 
+					size of the pdf page (width, height)
+				params (List[str]):
+					List of scale for each main items
+				types (List[str]) : 
+					list of the types of main items
+		returns:
+				coords (dict) : 
+					{"Titles" : [(centered coordinates x, y + max width, max height), ]}
+
+		"""
+		max_titles = 5  # ? HARD CODED : Max number of titles
+		top_margin = 50  # ? HARD CODED : Margin at the top of the page
+		bot_margin = 100  # ? HARD CODED : Margin at the bot of the page
+		side_margin = 100  # ? HARD CODED : Margin Sides
+		# ? HARD CODED : Margin between title(s) and main content
+		title_main_margin = 50
+		inter_title = 10  # ? HARD CODED : Interline between titles
+		max_main_item = 5 # ? HARD CODED : Max number of main items
+		inter_margin = 30 
+		
+		coords = {}	# CORDINATES DICT
+
+		titles = slide.items["titles"][:max_titles]
+		nb_titles = len(titles)
+		place_titles = top_margin + inter_title * nb_titles + title_main_margin
+		for t in titles:
+			_, s = slide.configs.get_title_font_size(t)
+			place_titles += s
+
+		# Compute the rest to be 100% - place_titles
+		max_main_size = (self.size[1] - place_titles)
+
+		if len(slide.items["titles"]) > max_titles:
+			print("WARNING : Too many titles, will only render the first 5")
+
+		# ---------- Titles ----------
+		list_coords_titles = []  # [(x, y, mw, mh), (x, y, mw, mh)]
+		cx = self.size[0] / 2  	# Centered x
+		y_offset = top_margin
+		for title in titles:
+			_, s = slide.configs.get_title_font_size(title)
+			y_offset += s + inter_title
+			list_coords_titles.append(
+				(cx, y_offset, self.size[0] - side_margin, s))
+
+		coords["titles"] = list_coords_titles
+
+		# KEEP ONLY MAIN ITEMS UNDER MAX
+		types = types[:max_main_item]
+
+		# TODO : Make this a formula
+		mainx = self.size[0] - side_margin * 2
+		mainy = max_main_size - bot_margin
+		item_width = mainx // len(types)
+		item_height = mainy
+		first_item_cx = side_margin + (item_width // 2)
+
+		#cxs = [side_margin + mainx / 4 -
+		#	   (side_margin // 2), side_margin + mainx * 3 / 4 + (side_margin // 2)]
+		
+		# ---------- Main item ----------
+		# Giving centered x and y
+		cy = place_titles + max_main_size / 2  # center y
+		for i, type in enumerate(types):
+			# setdefault for creating empty list when first time seeing the type
+			coords.setdefault(type, []).append(
+				(first_item_cx + (i * item_width), cy, item_width - inter_margin, item_height - inter_margin))
 
 		return coords

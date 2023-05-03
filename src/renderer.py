@@ -125,7 +125,7 @@ class Renderer:
 		styleN.fontName = self.font_name
 		styleN.fontSize = self.default_fontsize
 		styleN.leading = self.default_fontsize * 1.5
-		styleN.alignment = 4  # HARD CODED JUSTIFIED BECAUSE ITS DA BEST
+		styleN.alignment = 1  # HARD CODED JUSTIFIED BECAUSE ITS DA BEST
 
 		p = Paragraph(paragraph, styleN)
 		w, h = p.wrapOn(pdf, mw, mh)
